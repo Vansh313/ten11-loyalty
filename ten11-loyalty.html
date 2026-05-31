@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TEN11 Coffee Boutique — Loyalty</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green:       #1B4332;
+    --green-mid:   #2D6A4F;
+    --green-light: #40916C;
+    --green-pale:  #D8F3DC;
+    --gold:        #C9963A;
+    --gold-light:  #E8C97A;
+    --cream:       #F7F3EC;
+    --cream-dark:  #EDE7DA;
+    --brown:       #6B4F3A;
+    --white:       #FDFAF5;
+    --text:        #1C1C1C;
+    --mid:         #7A7065;
+    --border:      rgba(27,67,50,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Jost', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── BOTANICAL BG PATTERN ── */
+  .botanical-bg {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .botanical-bg::before {
+    content: '';
+    position: absolute;
+    top: -100px; right: -80px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(27,67,50,0.06) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .botanical-bg::after {
+    content: '';
+    position: absolute;
+    bottom: 100px; left: -60px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(201,150,58,0.07) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  /* ── SPLASH ── */
+  #splash {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--green);
+    position: relative;
+    padding: 48px 28px;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  #splash::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(ellipse at 20% 20%, rgba(201,150,58,0.15) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, rgba(64,145,108,0.2) 0%, transparent 50%);
+  }
+
+  #splash::after {
+    content: '✦';
+    position: absolute;
+    font-size: 300px;
+    color: rgba(255,255,255,0.02);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  .splash-badge {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin-bottom: 28px;
+    position: relative;
+  }
+
+  .splash-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(48px, 13vw, 72px);
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin-bottom: 4px;
+    position: relative;
+  }
+
+  .splash-logo sup {
+    font-size: 0.35em;
+    vertical-align: super;
+    color: var(--gold);
+    font-weight: 400;
+  }
+
+  .splash-sub {
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 0.55em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 48px;
+    position: relative;
+  }
+
+  .splash-ornament {
+    width: 80px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 0 auto 32px;
+    position: relative;
+  }
+  .splash-ornament::before {
+    content: '◆';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 8px;
+    color: var(--gold);
+    background: var(--green);
+    padding: 0 4px;
+  }
+
+  .splash-tagline {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(18px, 5vw, 24px);
+    color: rgba(255,255,255,0.8);
+    margin-bottom: 12px;
+    position: relative;
+  }
+
+  .splash-desc {
+    font-size: 12px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.45);
+    line-height: 1.8;
+    margin-bottom: 52px;
+    position: relative;
+    letter-spacing: 0.04em;
+  }
+
+  .btn-primary {
+    background: var(--gold);
+    color: var(--green);
+    border: none;
+    padding: 16px 40px;
+    font-family: 'Jost', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    cursor: pointer;
+    width: 100%;
+    max-width: 320px;
+    margin-bottom: 14px;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+  .btn-primary:hover { background: var(--gold-light); }
+
+  .btn-secondary {
+    background: transparent;
+    color: rgba(255,255,255,0.7);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 16px 40px;
+    font-family: 'Jost', sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    cursor: pointer;
+    width: 100%;
+    max-width: 320px;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+  .btn-secondary:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* ── SCREENS ── */
+  .screen { display: none; min-height: 100vh; position: relative; }
+  .screen.active { display: block; animation: fadeUp 0.4s ease; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── HEADER ── */
+  .app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    background: rgba(247,243,236,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--green);
+    letter-spacing: -0.01em;
+  }
+  .header-logo sup { font-size: 0.45em; color: var(--gold); vertical-align: super; }
+  .header-logo span {
+    display: block;
+    font-family: 'Jost', sans-serif;
+    font-size: 8px;
+    font-weight: 400;
+    letter-spacing: 0.45em;
+    color: var(--mid);
+    text-transform: uppercase;
+    margin-top: 1px;
+  }
+
+  .back-btn {
+    background: none;
+    border: none;
+    color: var(--mid);
+    cursor: pointer;
+    font-size: 18px;
+    padding: 6px;
+    transition: color 0.2s;
+  }
+  .back-btn:hover { color: var(--green); }
+
+  /* ── FORM SCREEN ── */
+  .form-screen {
+    padding: 36px 24px 100px;
+    max-width: 420px;
+    margin: 0 auto;
+    background: var(--white);
+    min-height: 100vh;
+  }
+
+  .form-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(30px, 8vw, 42px);
+    font-weight: 500;
+    color: var(--green);
+    line-height: 1.1;
+    margin-bottom: 6px;
+  }
+  .form-title em { font-style: italic; color: var(--gold); }
+
+  .form-subtitle {
+    font-size: 11px;
+    font-weight: 300;
+    color: var(--mid);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 36px;
+  }
+
+  .input-group { margin-bottom: 24px; }
+  .input-group label {
+    display: block;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 10px;
+  }
+  .input-group input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1.5px solid rgba(27,67,50,0.2);
+    padding: 10px 0;
+    color: var(--text);
+    font-family: 'Jost', sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+  .input-group input:focus { border-bottom-color: var(--green); }
+  .input-group input::placeholder { color: rgba(0,0,0,0.2); }
+
+  .register-perks {
+    background: var(--green);
+    padding: 20px 22px;
+    margin-bottom: 32px;
+  }
+  .perk-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 0;
+    font-size: 12px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.85);
+    letter-spacing: 0.03em;
+  }
+  .perk-icon { color: var(--gold-light); font-size: 10px; }
+
+  .btn-green {
+    background: var(--green);
+    color: var(--white);
+    border: none;
+    padding: 16px 40px;
+    font-family: 'Jost', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.3s ease;
+    margin-bottom: 14px;
+  }
+  .btn-green:hover { background: var(--green-mid); }
+
+  .btn-outline-green {
+    background: transparent;
+    color: var(--green);
+    border: 1.5px solid var(--green);
+    padding: 15px 40px;
+    font-family: 'Jost', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.3s ease;
+  }
+  .btn-outline-green:hover { background: var(--green); color: var(--white); }
+
+  /* ── DASHBOARD ── */
+  .dashboard { padding-bottom: 100px; background: var(--cream); }
+
+  .member-hero {
+    background: var(--green);
+    padding: 32px 24px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .member-hero::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,150,58,0.2) 0%, transparent 70%);
+  }
+  .member-hero::after {
+    content: '✦';
+    position: absolute;
+    bottom: 16px; right: 20px;
+    font-size: 80px;
+    color: rgba(255,255,255,0.04);
+    line-height: 1;
+  }
+
+  .member-greeting {
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin-bottom: 6px;
+    opacity: 0.85;
+  }
+
+  .member-name {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(24px, 7vw, 34px);
+    font-weight: 500;
+    color: var(--white);
+    margin-bottom: 20px;
+    letter-spacing: -0.01em;
+  }
+
+  .tier-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 16px;
+    border: 1px solid;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+  .tier-badge.silver { border-color: rgba(255,255,255,0.3); color: rgba(255,255,255,0.7); }
+  .tier-badge.gold { border-color: var(--gold); color: var(--gold-light); }
+  .tier-badge.platinum { border-color: #b0c4d8; color: #cfe0ef; }
+
+  .tier-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+  .points-display {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+  .points-number {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(56px, 15vw, 76px);
+    font-weight: 400;
+    line-height: 1;
+    color: var(--white);
+  }
+  .points-label {
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    padding-bottom: 10px;
+  }
+  .points-value {
+    font-size: 12px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 0.08em;
+  }
+  .points-value span { color: var(--gold-light); }
+
+  .progress-section { margin-top: 24px; }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    margin-bottom: 10px;
+  }
+  .progress-bar {
+    height: 2px;
+    background: rgba(255,255,255,0.1);
+    position: relative;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold) 0%, var(--gold-light) 100%);
+    transition: width 1.4s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  /* ── QUICK ACTIONS ── */
+  .quick-actions {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+  }
+  .quick-action {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 18px 8px;
+    cursor: pointer;
+    border-right: 1px solid var(--border);
+    transition: background 0.2s;
+    background: none;
+    border-top: none;
+    border-bottom: none;
+    border-left: none;
+    border-right: 1px solid var(--border);
+  }
+  .quick-action:last-child { border-right: none; }
+  .quick-action:hover { background: var(--green-pale); }
+  .qa-icon { font-size: 20px; margin-bottom: 7px; }
+  .qa-label {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--mid);
+    text-align: center;
+  }
+
+  /* ── SECTIONS ── */
+  .section {
+    padding: 28px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--white);
+    margin-bottom: 8px;
+  }
+  .section-title {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── REWARDS ── */
+  .rewards-scroll {
+    display: flex;
+    gap: 14px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    scrollbar-width: none;
+  }
+  .rewards-scroll::-webkit-scrollbar { display: none; }
+
+  .reward-card {
+    flex: 0 0 155px;
+    background: var(--cream);
+    border: 1px solid var(--border);
+    padding: 18px 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+  .reward-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 100%; height: 3px;
+    background: var(--green);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+  .reward-card:hover { border-color: var(--green); }
+  .reward-card:hover::after { transform: scaleX(1); }
+  .reward-card.locked { opacity: 0.4; cursor: not-allowed; }
+
+  .reward-emoji { font-size: 26px; margin-bottom: 10px; display: block; }
+  .reward-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--green);
+    margin-bottom: 6px;
+    line-height: 1.2;
+  }
+  .reward-pts {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+  }
+  .reward-pts.locked-pts { color: var(--mid); }
+
+  /* ── TRANSACTIONS ── */
+  .txn-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(27,67,50,0.06);
+  }
+  .txn-item:last-child { border-bottom: none; }
+  .txn-left { display: flex; align-items: center; gap: 14px; }
+  .txn-icon {
+    width: 34px; height: 34px;
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    color: var(--green);
+    flex-shrink: 0;
+    background: var(--cream);
+  }
+  .txn-name { font-size: 13px; font-weight: 400; color: var(--text); margin-bottom: 3px; }
+  .txn-date { font-size: 10px; font-weight: 300; color: var(--mid); letter-spacing: 0.08em; }
+  .txn-pts { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 400; }
+  .txn-pts.earn { color: var(--green-light); }
+  .txn-pts.redeem { color: #c0392b; }
+
+  /* ── BIRTHDAY BANNER ── */
+  .birthday-banner {
+    margin: 8px 0;
+    padding: 24px;
+    background: var(--green);
+    position: relative;
+    overflow: hidden;
+  }
+  .birthday-banner::after {
+    content: '🎂';
+    position: absolute;
+    right: 16px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 44px;
+    opacity: 0.12;
+  }
+  .birthday-label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin-bottom: 8px;
+  }
+  .birthday-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--white);
+    margin-bottom: 6px;
+  }
+  .birthday-desc {
+    font-size: 11px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.6;
+  }
+
+  /* ── QR SCREEN ── */
+  .qr-screen {
+    padding: 40px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    background: var(--white);
+    min-height: 100vh;
+  }
+  .qr-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 500;
+    color: var(--green);
+    margin-bottom: 8px;
+  }
+  .qr-subtitle {
+    font-size: 11px;
+    font-weight: 300;
+    color: var(--mid);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 40px;
+  }
+  .qr-frame {
+    width: 220px; height: 220px;
+    border: 1.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin-bottom: 28px;
+    background: var(--cream);
+  }
+  .qr-corner {
+    position: absolute;
+    width: 20px; height: 20px;
+    border-color: var(--green);
+    border-style: solid;
+  }
+  .qr-corner.tl { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+  .qr-corner.tr { top: -1px; right: -1px; border-width: 2px 2px 0 0; }
+  .qr-corner.bl { bottom: -1px; left: -1px; border-width: 0 0 2px 2px; }
+  .qr-corner.br { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+  .qr-inner {
+    width: 180px; height: 180px;
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    grid-template-rows: repeat(9, 1fr);
+    gap: 2px;
+  }
+  .qr-cell { background: var(--green); border-radius: 1px; }
+  .qr-cell.empty { background: transparent; }
+
+  .qr-member-id {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--mid);
+    letter-spacing: 0.3em;
+    margin-bottom: 8px;
+    font-family: 'Playfair Display', serif;
+  }
+  .qr-note {
+    font-size: 11px;
+    font-weight: 300;
+    color: var(--mid);
+    letter-spacing: 0.05em;
+    line-height: 1.7;
+    max-width: 270px;
+    margin-bottom: 32px;
+  }
+  .earning-box {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    padding: 20px 24px;
+    width: 100%;
+    max-width: 320px;
+    border-left: 3px solid var(--green);
+  }
+
+  /* ── REFER ── */
+  .refer-code-box {
+    background: var(--green);
+    padding: 28px;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .refer-code {
+    font-family: 'Playfair Display', serif;
+    font-size: 34px;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    color: var(--gold-light);
+    margin-bottom: 8px;
+  }
+  .refer-desc {
+    font-size: 11px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.6;
+  }
+
+  /* ── TIERS ── */
+  .tier-cards { display: flex; flex-direction: column; gap: 14px; padding: 24px; }
+  .tier-card {
+    border: 1px solid var(--border);
+    padding: 22px;
+    background: var(--white);
+    position: relative;
+    overflow: hidden;
+  }
+  .tier-card.active-tier { border-color: var(--green); border-width: 1.5px; }
+  .tier-card-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  .tier-card-range {
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .tier-card-benefit {
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--mid);
+    padding: 7px 0;
+    border-bottom: 1px solid rgba(27,67,50,0.06);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .tier-card-benefit:last-child { border-bottom: none; }
+  .current-badge {
+    position: absolute;
+    top: 14px; right: 14px;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--white);
+    background: var(--green);
+    padding: 4px 10px;
+  }
+
+  /* ── BOTTOM NAV ── */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(253,250,245,0.97);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    z-index: 200;
+  }
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    background: none;
+    color: var(--mid);
+  }
+  .nav-item.active { color: var(--green); }
+  .nav-item:hover { color: var(--green-mid); }
+  .nav-icon { font-size: 18px; margin-bottom: 4px; }
+  .nav-label { font-size: 9px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 500;
+    align-items: flex-end;
+    backdrop-filter: blur(4px);
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--white);
+    border-top: 3px solid var(--green);
+    padding: 32px 24px 48px;
+    width: 100%;
+    animation: slideUp 0.3s ease;
+  }
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  .modal-handle {
+    width: 36px; height: 3px;
+    background: var(--border);
+    margin: 0 auto 28px;
+    border-radius: 2px;
+  }
+  .modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 500;
+    color: var(--green);
+    margin-bottom: 6px;
+  }
+  .modal-pts {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--gold);
+    letter-spacing: 0.25em;
+    margin-bottom: 20px;
+  }
+  .modal-desc {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--mid);
+    line-height: 1.7;
+    margin-bottom: 28px;
+  }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 88px; left: 50%;
+    transform: translateX(-50%) translateY(16px);
+    background: var(--green);
+    color: var(--white);
+    padding: 12px 28px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 999;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ── LOCATIONS ── */
+  .location-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(27,67,50,0.07);
+  }
+  .location-item:last-child { border-bottom: none; }
+  .loc-icon {
+    width: 32px; height: 32px;
+    background: var(--green-pale);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .loc-name { font-size: 13px; font-weight: 500; color: var(--green); margin-bottom: 3px; }
+  .loc-address { font-size: 11px; font-weight: 300; color: var(--mid); line-height: 1.5; }
+</style>
+</head>
+<body>
+
+<div class="botanical-bg"></div>
+
+<!-- ══════════ SPLASH ══════════ -->
+<div id="splash">
+  <div class="splash-badge">Loyalty Programme</div>
+  <div class="splash-logo">TEN<sup>11</sup></div>
+  <div class="splash-sub">Coffee Boutique</div>
+  <div class="splash-ornament"></div>
+  <div class="splash-tagline">Crafted With Care,<br>Served With Elegance</div>
+  <p class="splash-desc">Earn points with every cup and every dish.<br>Unlock exclusive rewards. Belong to something special.</p>
+  <button class="btn-primary" onclick="showScreen('login')">SIGN IN</button>
+  <button class="btn-secondary" onclick="showScreen('register')">JOIN THE BOUTIQUE</button>
+</div>
+
+<!-- ══════════ REGISTER ══════════ -->
+<div id="register" class="screen">
+  <div class="app-header">
+    <button class="back-btn" onclick="showSplash()">←</button>
+    <div class="header-logo">TEN<sup>11</sup><span>Coffee Boutique</span></div>
+    <div style="width:28px"></div>
+  </div>
+  <div class="form-screen">
+    <div class="form-title">Join the<br><em>Boutique</em></div>
+    <div class="form-subtitle">Membership is complimentary</div>
+
+    <div class="register-perks">
+      <div class="perk-item"><span class="perk-icon">◆</span> 1 point per AED 10 spent</div>
+      <div class="perk-item"><span class="perk-icon">◆</span> Earn across all TEN11 locations</div>
+      <div class="perk-item"><span class="perk-icon">◆</span> Silver, Gold & Platinum tiers</div>
+      <div class="perk-item"><span class="perk-icon">◆</span> Birthday week special offer</div>
+      <div class="perk-item"><span class="perk-icon">◆</span> Refer a friend — earn bonus points</div>
+      <div class="perk-item"><span class="perk-icon">◆</span> Earn at 7seven7 outlets too</div>
+    </div>
+
+    <div class="input-group"><label>Full Name</label><input type="text" id="reg-name" placeholder="Your name"></div>
+    <div class="input-group"><label>Email Address</label><input type="email" id="reg-email" placeholder="your@email.com"></div>
+    <div class="input-group"><label>Phone (WhatsApp)</label><input type="tel" id="reg-phone" placeholder="+971 XX XXX XXXX"></div>
+    <div class="input-group"><label>Date of Birth</label><input type="date" id="reg-dob"></div>
+    <div class="input-group"><label>Preferred Location</label><input type="text" id="reg-loc" placeholder="e.g. Dubai Mall, Khalifa Park..."></div>
+    <div class="input-group"><label>Referral Code (optional)</label><input type="text" id="reg-ref" placeholder="Enter code"></div>
+    <br>
+    <button class="btn-green" onclick="doRegister()">CREATE MY ACCOUNT</button>
+  </div>
+</div>
+
+<!-- ══════════ LOGIN ══════════ -->
+<div id="login" class="screen">
+  <div class="app-header">
+    <button class="back-btn" onclick="showSplash()">←</button>
+    <div class="header-logo">TEN<sup>11</sup><span>Coffee Boutique</span></div>
+    <div style="width:28px"></div>
+  </div>
+  <div class="form-screen">
+    <div class="form-title">Welcome<br><em>Back</em></div>
+    <div class="form-subtitle">Sign in to your account</div>
+    <div class="input-group"><label>Email Address</label><input type="email" placeholder="your@email.com"></div>
+    <div class="input-group"><label>Password</label><input type="password" placeholder="••••••••"></div>
+    <br>
+    <button class="btn-green" onclick="doDemoLogin()">SIGN IN</button>
+    <br><br>
+    <button class="btn-outline-green" onclick="showScreen('register')">NEW? JOIN THE BOUTIQUE</button>
+  </div>
+</div>
+
+<!-- ══════════ DASHBOARD ══════════ -->
+<div id="dashboard" class="screen">
+  <div class="app-header">
+    <div class="header-logo">TEN<sup>11</sup><span>Coffee Boutique</span></div>
+    <button onclick="showToast('Profile settings coming soon')" style="background:none;border:none;color:var(--mid);cursor:pointer;font-size:18px;">⚙</button>
+  </div>
+
+  <div class="dashboard">
+    <div class="member-hero">
+      <div class="member-greeting">Good morning</div>
+      <div class="member-name" id="dash-name">Fatima Al Zaabi</div>
+      <div class="tier-badge gold"><div class="tier-dot"></div>Gold Member</div>
+      <div class="points-display">
+        <div class="points-number" id="dash-points">1,480</div>
+        <div class="points-label">pts</div>
+      </div>
+      <div class="points-value">≈ <span>AED 148</span> in rewards value</div>
+      <div class="progress-section">
+        <div class="progress-label">
+          <span>Gold → Platinum</span>
+          <span>1,480 / 2,000 pts</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width:74%"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="quick-actions">
+      <button class="quick-action" onclick="showNavScreen('qr')"><div class="qa-icon">◈</div><div class="qa-label">Check In</div></button>
+      <button class="quick-action" onclick="showNavScreen('rewards')"><div class="qa-icon">✦</div><div class="qa-label">Redeem</div></button>
+      <button class="quick-action" onclick="showNavScreen('refer')"><div class="qa-icon">◎</div><div class="qa-label">Refer</div></button>
+      <button class="quick-action" onclick="showNavScreen('tiers')"><div class="qa-icon">◇</div><div class="qa-label">Tiers</div></button>
+    </div>
+
+    <div class="birthday-banner">
+      <div class="birthday-label">Birthday Privilege</div>
+      <div class="birthday-title">A Gift From TEN11</div>
+      <div class="birthday-desc">Enjoy a complimentary specialty coffee or homemade dessert on your birthday. Valid the entire birthday week at any TEN11 location.</div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Redeem Points</div>
+      <div class="rewards-scroll">
+        <div class="reward-card" onclick="openModal('Specialty Coffee','100 pts','Any hot or cold specialty coffee from our full collection — Spanish Latte, Saffron Latte, V60, Chemex and more.')">
+          <span class="reward-emoji">☕</span>
+          <div class="reward-name">Specialty Coffee</div>
+          <div class="reward-pts">100 pts</div>
+        </div>
+        <div class="reward-card" onclick="openModal('Homemade Dessert','250 pts','Any dessert from our menu — Milk Cakes, Tiramisu, Churros & Chocolate, French Toast and more.')">
+          <span class="reward-emoji">🍰</span>
+          <div class="reward-name">Homemade Dessert</div>
+          <div class="reward-pts">250 pts</div>
+        </div>
+        <div class="reward-card" onclick="openModal('Savory Breakfast','400 pts','Any breakfast dish — Shakshuka Skillet, Eggs Mushrooms & Truffles, Halloumi & Pesto, Zaatar Innovation and more.')">
+          <span class="reward-emoji">🍳</span>
+          <div class="reward-name">Savory Breakfast</div>
+          <div class="reward-pts">400 pts</div>
+        </div>
+        <div class="reward-card" onclick="openModal('Signature Flatbread','500 pts','Any flatbread or pizza — Truffle Mushroom, Chipotle Chicken, Pesto & Burrata and more.')">
+          <span class="reward-emoji">🫓</span>
+          <div class="reward-name">Signature Flatbread</div>
+          <div class="reward-pts">500 pts</div>
+        </div>
+        <div class="reward-card" onclick="openModal('Wagyu Burger','700 pts','Our signature Wagyu Beef Burger — the full premium experience.')">
+          <span class="reward-emoji">🍔</span>
+          <div class="reward-name">Wagyu Burger</div>
+          <div class="reward-pts">700 pts</div>
+        </div>
+        <div class="reward-card locked">
+          <span class="reward-emoji">🥩</span>
+          <div class="reward-name">Wagyu Ribeye Robata</div>
+          <div class="reward-pts locked-pts">1,400 pts · Platinum</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Recent Activity</div>
+      <div class="txn-item">
+        <div class="txn-left"><div class="txn-icon">+</div><div><div class="txn-name">Dubai Mall Visit</div><div class="txn-date">31 May 2026 · AED 185</div></div></div>
+        <div class="txn-pts earn">+18</div>
+      </div>
+      <div class="txn-item">
+        <div class="txn-left"><div class="txn-icon">+</div><div><div class="txn-name">Referral Bonus — Mariam</div><div class="txn-date">28 May 2026</div></div></div>
+        <div class="txn-pts earn">+200</div>
+      </div>
+      <div class="txn-item">
+        <div class="txn-left"><div class="txn-icon">−</div><div><div class="txn-name">Redeemed: Milk Cake</div><div class="txn-date">25 May 2026</div></div></div>
+        <div class="txn-pts redeem">−250</div>
+      </div>
+      <div class="txn-item">
+        <div class="txn-left"><div class="txn-icon">+</div><div><div class="txn-name">Khalifa Park Visit</div><div class="txn-date">22 May 2026 · AED 320</div></div></div>
+        <div class="txn-pts earn">+32</div>
+      </div>
+      <div class="txn-item">
+        <div class="txn-left"><div class="txn-icon">★</div><div><div class="txn-name">Birthday Bonus</div><div class="txn-date">15 May 2026</div></div></div>
+        <div class="txn-pts earn">+500</div>
+      </div>
+    </div>
+
+    <!-- Locations -->
+    <div class="section">
+      <div class="section-title">Our Locations</div>
+      <div class="location-item"><div class="loc-icon">📍</div><div><div class="loc-name">TEN11 Dubai Mall</div><div class="loc-address">Fashion Avenue · Mon–Fri 8:30am–12am</div></div></div>
+      <div class="location-item"><div class="loc-icon">📍</div><div><div class="loc-name">TEN11 Khalifa Park</div><div class="loc-address">Abu Dhabi · 7am–12am Daily</div></div></div>
+      <div class="location-item"><div class="loc-icon">📍</div><div><div class="loc-name">TEN11 Beach</div><div class="loc-address">Mamsha Al Saadiyat · 8am–12am Daily</div></div></div>
+      <div class="location-item"><div class="loc-icon">📍</div><div><div class="loc-name">TEN11 Marina Mall</div><div class="loc-address">Abu Dhabi · 8am–12am Daily</div></div></div>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <button class="nav-item active" onclick="showNavScreen('dashboard')"><div class="nav-icon">⌂</div><div class="nav-label">Home</div></button>
+    <button class="nav-item" onclick="showNavScreen('rewards')"><div class="nav-icon">✦</div><div class="nav-label">Rewards</div></button>
+    <button class="nav-item" onclick="showNavScreen('qr')"><div class="nav-icon">◈</div><div class="nav-label">Check In</div></button>
+    <button class="nav-item" onclick="showNavScreen('profile')"><div class="nav-icon">◯</div><div class="nav-label">Profile</div></button>
+  </div>
+</div>
+
+<!-- ══════════ REWARDS ══════════ -->
+<div id="rewards" class="screen">
+  <div class="app-header">
+    <button class="back-btn" onclick="showNavScreen('dashboard')">←</button>
+    <div class="header-logo">TEN<sup>11</sup><span>Coffee Boutique</span></div>
+    <div style="width:28px"></div>
+  </div>
+  <div class="form-screen" style="background:var(--cream)">
+    <div class="form-title">Redeem<br><em>Rewards</em></div>
+    <div class="form-subtitle" style="margin-bottom:28px">You have <span style="color:var(--green);font-weight:500">1,480 pts</span> available</div>
+
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="background:var(--white);border:1px solid var(--border);padding:18px 20px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;border-left:3px solid var(--green)" onclick="openModal('Specialty Coffee','100 pts','Any hot or cold specialty coffee — Spanish Latte, Saffron Latte, V60, Chemex, Flat White and more.')">
+        <div style="display:flex;align-items:center;gap:14px"><span style="font-size:22px">☕</span><div><div style="font-family:Playfair Display,serif;font-size:16px;color:var(--green)">Specialty Coffee</div><div style="font-size:10px;color:var(--gold);letter-spacing:.2em;margin-top:2px">100 PTS</div></div></div>
+        <span style="color:var(--green)">→</span>
+      </div>
+      <div style="background:var(--white);border:1px solid var(--border);padding:18px 20px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;border-left:3px solid var(--green)" onclick="openModal('Homemade Dessert','250 pts','Milk Cakes (Mango, Pistachio or Saffron), Classic Tiramisu, Churros & Chocolate, French Toast and more.')">
+        <div style="display:flex;align-items:center;gap:14px"><span style="font-size:22px">🍰</span><div><div style="font-family:Playfair Display,serif;font-size:16px;color:var(--green)">Homemade Dessert</div><div style="font-size:10px;color:var(--gold);letter-spacing:.2em;margin-top:2px">250 PTS</div></div></div>
+        <span style="color:var(--green)">→</span>
+      </div>
+      <div style="background:var(--white);border:1px solid var(--border);padding:18px 20px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;border-left:3px solid var(--green)" onclick="openModal('Savory Breakfast','400 pts','Shakshuka Skillet, Eggs Mushrooms & Truffles, Halloumi and Pesto, Zaatar Innovation, Chipotle Turkish Eggs and more.')">
+        <div style="display:flex;align-items:center;gap:14px"><span style="font-size:22px">🍳</span><div><div style="font-family:Playfair Display,serif;font-size:16px;color:var(--green)">Savory Breakfast</div><div style="font-size:10px;color:var(--gold);letter-spacing:.2em;margin-top:2px">400 PTS</div></div></div>
+        <span style="color:var(--green)">→</span>
+      </div>
+      <div style="background:var(--white);border:1px solid var(--border);padding:18px 20px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;border-left:3px solid var(--green)" onclick="openModal('Signature Flatbread','500 pts','Truffle Mushroom Pizza, Chipotle Chicken Flatbread, Pesto & Burrata, Margherita by TEN11 and more.')">
+        <div style="display:flex;align-items:center;gap:14px"><span style="font-size:22px">🫓</span><div><div style="font-family:Playfair Display,serif;font-size:16px;color:var(--green)">Signature Flatbread</div><div style="font-size:10px;color:var(--gold);letter-spacing:.2em;margin-top:2px">500 PTS</div></div></div>
+        <span style="color:var(--green)">→</span>
+      </div>
+      <div style="background:var(--white);border:1px solid var(--border);padding:18px 20px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;border-left:3px solid var(--green)" onclick="openModal('Wagyu Beef Burger','700 pts','Our signature Wagyu Beef Burger — the full TEN11 premium experience.')">
+        <div style="display:flex;align-items:center;gap:14px"><span style="font-size:22px">🍔</span><div><div style="font-family:Playfair Display,serif;font-size:16px;color:var(--green)">Wagyu Beef Burger</div><div style="font-size:10px;color:var(--gold);letter-spacing:.2em;margin-top:2px">700 PTS</div></div></div>
+        <span style="color:var(--green)">→</span>
+      </div>
+      <div style="background:var(--white);border:1px solid var(--border);padding:18px 20px;opacity:.4;display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:14px"><span style="font-size:22px">🥩</span><div><div style="font-family:Playfair Display,serif;font-size:16px;color:var(--green)">Wagyu Ribeye Robata</div><div style="font-size:10px;color:var(--mid);letter-spacing:.2em;margin-top:2px">1,400 PTS · PLATINUM ONLY</div></div></div>
+        <span style="color:var(--mid)">🔒</span>
+      </div>
+      <div style="background:var(--white);border:1px solid var(--border);padding:18px 20px;opacity:.4;display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:14px"><span style="font-size:22px">🦐</span><div><div style="font-family:Playfair Display,serif;font-size:16px;color:var(--green)">Shrimp Saffron Risotto</div><div style="font-size:10px;color:var(--mid);letter-spacing:.2em;margin-top:2px">1,200 PTS · PLATINUM ONLY</div></div></div>
+        <span style="color:var(--mid)">🔒</span>
+      </div>
+    </div>
+  </div>
+  <div style="height:100px"></div>
+  <div class="bottom-nav">
+    <button class="nav-item" onclick="showNavScreen('dashboard')"><div class="nav-icon">⌂</div><div class="nav-label">Home</div></button>
+    <button class="nav-item active" onclick="showNavScreen('rewards')"><div class="nav-icon">✦</div><div class="nav-label">Rewards</div></button>
+    <button class="nav-item" onclick="showNavScreen('qr')"><div class="nav-icon">◈</div><div class="nav-label">Check In</div></button>
+    <button class="nav-item" onclick="showNavScreen('profile')"><div class="nav-icon">◯</div><div class="nav-label">Profile</div></button>
+  </div>
+</div>
+
+<!-- ══════════ QR ══════════ -->
+<div id="qr" class="screen">
+  <div class="app-header">
+    <button class="back-btn" onclick="showNavScreen('dashboard')">←</button>
+    <div class="header-logo">TEN<sup>11</sup><span>Coffee Boutique</span></div>
+    <div style="width:28px"></div>
+  </div>
+  <div class="qr-screen">
+    <div class="qr-title">Check In</div>
+    <div class="qr-subtitle">Show this to your barista</div>
+    <div class="qr-frame">
+      <div class="qr-corner tl"></div><div class="qr-corner tr"></div>
+      <div class="qr-corner bl"></div><div class="qr-corner br"></div>
+      <div class="qr-inner" id="qr-grid"></div>
+    </div>
+    <div class="qr-member-id">TEN11 · UAE · 007342</div>
+    <div class="qr-note">Your barista scans this at checkout. Points are credited instantly. Valid at all TEN11 and 7seven7 locations across the UAE.</div>
+    <div class="earning-box">
+      <div style="font-size:10px;font-weight:500;letter-spacing:.3em;text-transform:uppercase;color:var(--green);margin-bottom:10px">Earning Rate</div>
+      <div style="font-family:Playfair Display,serif;font-size:26px;font-weight:400;color:var(--green)">1 point</div>
+      <div style="font-size:11px;color:var(--mid);margin-top:4px">per AED 10 spent · All locations</div>
+    </div>
+  </div>
+  <div style="height:80px"></div>
+  <div class="bottom-nav">
+    <button class="nav-item" onclick="showNavScreen('dashboard')"><div class="nav-icon">⌂</div><div class="nav-label">Home</div></button>
+    <button class="nav-item" onclick="showNavScreen('rewards')"><div class="nav-icon">✦</div><div class="nav-label">Rewards</div></button>
+    <button class="nav-item active" onclick="showNavScreen('qr')"><div class="nav-icon">◈</div><div class="nav-label">Check In</div></button>
+    <button class="nav-item" onclick="showNavScreen('profile')"><div class="nav-icon">◯</div><div class="nav-label">Profile</div></button>
+  </div>
+</div>
+
+<!-- ══════════ REFER ══════════ -->
+<div id="refer" class="screen">
+  <div class="app-header">
+    <button class="back-btn" onclick="showNavScreen('dashboard')">←</button>
+    <div class="header-logo">TEN<sup>11</sup><span>Coffee Boutique</span></div>
+    <div style="width:28px"></div>
+  </div>
+  <div class="form-screen">
+    <div class="form-title">Refer a<br><em>Friend</em></div>
+    <div class="form-subtitle">Both of you earn bonus points</div>
+    <div class="refer-code-box">
+      <div style="font-size:10px;font-weight:500;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:14px">Your Personal Code</div>
+      <div class="refer-code">FATIMA200</div>
+      <div class="refer-desc">Share this code with friends.<br>They get 100 pts on joining. You get 200 pts when they first visit any TEN11.</div>
+    </div>
+    <button class="btn-green" onclick="showToast('Code copied — share it!')">COPY CODE</button>
+    <br><br>
+    <button class="btn-outline-green" onclick="showToast('Sharing via WhatsApp...')">SHARE VIA WHATSAPP</button>
+    <div style="margin-top:36px">
+      <div class="section-title" style="padding:0">Referral History</div>
+      <div class="txn-item"><div class="txn-left"><div class="txn-icon">✓</div><div><div class="txn-name">Mariam Al Rashdi</div><div class="txn-date">28 May 2026 · Joined & visited</div></div></div><div class="txn-pts earn">+200</div></div>
+      <div class="txn-item"><div class="txn-left"><div class="txn-icon">◎</div><div><div class="txn-name">Sara Khalid</div><div class="txn-date">25 May 2026 · Joined, awaiting visit</div></div></div><div class="txn-pts" style="color:var(--mid)">Pending</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ TIERS ══════════ -->
+<div id="tiers" class="screen">
+  <div class="app-header">
+    <button class="back-btn" onclick="showNavScreen('dashboard')">←</button>
+    <div class="header-logo">TEN<sup>11</sup><span>Coffee Boutique</span></div>
+    <div style="width:28px"></div>
+  </div>
+  <div style="padding:32px 24px 0;background:var(--cream)">
+    <div class="form-title">Membership<br><em>Tiers</em></div>
+    <div class="form-subtitle" style="margin-bottom:0">Your rewards grow with every visit</div>
+  </div>
+  <div class="tier-cards">
+    <div class="tier-card">
+      <div class="tier-card-name" style="color:#9aa0a6">Silver</div>
+      <div class="tier-card-range" style="color:#9aa0a6">0 – 999 points</div>
+      <div class="tier-card-benefit"><span style="color:#9aa0a6">◆</span> 1 pt per AED 10 spent</div>
+      <div class="tier-card-benefit"><span style="color:#9aa0a6">◆</span> Birthday week — free coffee</div>
+      <div class="tier-card-benefit"><span style="color:#9aa0a6">◆</span> Refer a friend — 200 pts</div>
+      <div class="tier-card-benefit"><span style="color:#9aa0a6">◆</span> Redeem: coffees & desserts</div>
+      <div class="tier-card-benefit"><span style="color:#9aa0a6">◆</span> Valid at all UAE locations</div>
+    </div>
+    <div class="tier-card active-tier">
+      <div class="current-badge">Your Tier</div>
+      <div class="tier-card-name" style="color:var(--gold)">Gold</div>
+      <div class="tier-card-range" style="color:var(--gold)">1,000 – 1,999 points</div>
+      <div class="tier-card-benefit"><span style="color:var(--gold)">◆</span> 1.2× points multiplier</div>
+      <div class="tier-card-benefit"><span style="color:var(--gold)">◆</span> Birthday week — free breakfast</div>
+      <div class="tier-card-benefit"><span style="color:var(--gold)">◆</span> Early access to new menu items</div>
+      <div class="tier-card-benefit"><span style="color:var(--gold)">◆</span> Redeem up to Wagyu Burger</div>
+      <div class="tier-card-benefit"><span style="color:var(--gold)">◆</span> Cross-earn at 7seven7 outlets</div>
+    </div>
+    <div class="tier-card">
+      <div class="tier-card-name" style="color:#b0c4d8">Platinum</div>
+      <div class="tier-card-range" style="color:#b0c4d8">2,000+ points</div>
+      <div class="tier-card-benefit"><span style="color:#b0c4d8">◆</span> 1.5× points multiplier</div>
+      <div class="tier-card-benefit"><span style="color:#b0c4d8">◆</span> Monthly complimentary dish</div>
+      <div class="tier-card-benefit"><span style="color:#b0c4d8">◆</span> Birthday month — free main course</div>
+      <div class="tier-card-benefit"><span style="color:#b0c4d8">◆</span> Wagyu Ribeye & Risotto rewards</div>
+      <div class="tier-card-benefit"><span style="color:#b0c4d8">◆</span> Priority catering & event access</div>
+      <div class="tier-card-benefit"><span style="color:#b0c4d8">◆</span> Dedicated WhatsApp concierge</div>
+    </div>
+  </div>
+  <div style="height:40px"></div>
+</div>
+
+<!-- ══════════ PROFILE ══════════ -->
+<div id="profile" class="screen">
+  <div class="app-header">
+    <button class="back-btn" onclick="showNavScreen('dashboard')">←</button>
+    <div class="header-logo">TEN<sup>11</sup><span>Coffee Boutique</span></div>
+    <div style="width:28px"></div>
+  </div>
+  <div class="form-screen">
+    <div class="form-title"><em>My</em><br>Account</div>
+    <div class="form-subtitle" style="margin-bottom:28px">Gold Member · ID #007342</div>
+    <div style="border:1px solid var(--border)">
+      <div style="padding:15px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="showToast('Edit profile coming soon')"><span style="font-size:12px;font-weight:300;color:var(--text)">Edit Profile</span><span style="color:var(--green)">→</span></div>
+      <div style="padding:15px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="showNavScreen('tiers')"><span style="font-size:12px;font-weight:300;color:var(--text)">Membership Tiers</span><span style="color:var(--green)">→</span></div>
+      <div style="padding:15px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="showNavScreen('refer')"><span style="font-size:12px;font-weight:300;color:var(--text)">Refer a Friend</span><span style="color:var(--green)">→</span></div>
+      <div style="padding:15px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="showToast('WhatsApp notifications coming soon')"><span style="font-size:12px;font-weight:300;color:var(--text)">Notifications (WhatsApp)</span><span style="color:var(--green)">→</span></div>
+      <div style="padding:15px 20px;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="showSplash()"><span style="font-size:12px;font-weight:300;color:#c0392b">Sign Out</span><span style="color:#c0392b">→</span></div>
+    </div>
+    <div style="margin-top:36px;text-align:center">
+      <div style="font-size:10px;color:var(--mid);letter-spacing:.12em;line-height:2.2">
+        Hotline: 600 533 339<br>
+        info@ten11cafe.ae<br>
+        @ten11cafeuae · 6 UAE locations
+      </div>
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <button class="nav-item" onclick="showNavScreen('dashboard')"><div class="nav-icon">⌂</div><div class="nav-label">Home</div></button>
+    <button class="nav-item" onclick="showNavScreen('rewards')"><div class="nav-icon">✦</div><div class="nav-label">Rewards</div></button>
+    <button class="nav-item" onclick="showNavScreen('qr')"><div class="nav-icon">◈</div><div class="nav-label">Check In</div></button>
+    <button class="nav-item active" onclick="showNavScreen('profile')"><div class="nav-icon">◯</div><div class="nav-label">Profile</div></button>
+  </div>
+</div>
+
+<!-- ══════════ MODAL ══════════ -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modal-title">Specialty Coffee</div>
+    <div class="modal-pts" id="modal-pts">100 PTS</div>
+    <div class="modal-desc" id="modal-desc">Any specialty coffee from the menu.</div>
+    <button class="btn-green" onclick="doRedeem()">CONFIRM REDEMPTION</button>
+    <br><br>
+    <button class="btn-outline-green" onclick="closeModal()">CANCEL</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  function showSplash() {
+    document.getElementById('splash').style.display = 'flex';
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  }
+  function showScreen(id) {
+    document.getElementById('splash').style.display = 'none';
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+  function showNavScreen(id) {
+    document.getElementById('splash').style.display = 'none';
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+  function doRegister() {
+    const name = document.getElementById('reg-name').value || 'Valued Member';
+    document.getElementById('dash-name').textContent = name;
+    document.getElementById('dash-points').textContent = '0';
+    showToast('Welcome to TEN11 Boutique Loyalty!');
+    showScreen('dashboard');
+  }
+  function doDemoLogin() {
+    showToast('Welcome back, Fatima.');
+    showScreen('dashboard');
+  }
+  function openModal(name, pts, desc) {
+    document.getElementById('modal-title').textContent = name;
+    document.getElementById('modal-pts').textContent = pts.toUpperCase();
+    document.getElementById('modal-desc').textContent = desc;
+    document.getElementById('modal-overlay').classList.add('open');
+  }
+  function closeModal(e) {
+    if (!e || e.target === document.getElementById('modal-overlay')) {
+      document.getElementById('modal-overlay').classList.remove('open');
+    }
+  }
+  function doRedeem() {
+    document.getElementById('modal-overlay').classList.remove('open');
+    showToast('Redemption confirmed — show this to your barista');
+  }
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+  function buildQR() {
+    const grid = document.getElementById('qr-grid');
+    if (!grid) return;
+    const pattern = [1,1,1,0,1,0,1,1,1,1,0,1,1,0,1,1,0,1,1,0,1,0,1,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,1,0,1,0,0,1,1,1,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,1,0,1,1,0,0,1,0,1,0,1,1,1,0,1];
+    grid.innerHTML = '';
+    pattern.forEach(v => {
+      const cell = document.createElement('div');
+      cell.className = 'qr-cell' + (v === 0 ? ' empty' : '');
+      grid.appendChild(cell);
+    });
+  }
+  buildQR();
+</script>
+</body>
+</html>
