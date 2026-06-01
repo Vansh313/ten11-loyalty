@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TEN11 Coffee Boutique — Admin Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400&family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green:       #1B4332;
+    --green-mid:   #2D6A4F;
+    --green-light: #40916C;
+    --green-pale:  #D8F3DC;
+    --gold:        #C9963A;
+    --gold-light:  #E8C97A;
+    --cream:       #F7F3EC;
+    --cream-dark:  #EDE7DA;
+    --white:       #FDFAF5;
+    --text:        #1C1C1C;
+    --mid:         #7A7065;
+    --border:      rgba(27,67,50,0.1);
+    --panel:       #FDFAF5;
+    --red:         #C0392B;
+    --blue:        #2980B9;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Jost', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 224px;
+    background: var(--green);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 100;
+  }
+
+  .sidebar-logo {
+    padding: 28px 24px 22px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .sidebar-logo .name {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: -0.01em;
+    color: var(--white);
+  }
+  .sidebar-logo .name sup { font-size: 0.42em; color: var(--gold-light); vertical-align: super; font-weight: 400; }
+
+  .sidebar-logo .sub {
+    font-size: 9px;
+    font-weight: 300;
+    letter-spacing: 0.45em;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+    margin-top: 3px;
+  }
+
+  .sidebar-label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    padding: 20px 24px 8px;
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 24px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    color: rgba(255,255,255,0.55);
+    transition: all 0.2s;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+  }
+
+  .nav-link:hover { color: var(--white); background: rgba(255,255,255,0.05); }
+  .nav-link.active { color: var(--gold-light); background: rgba(201,150,58,0.12); }
+
+  .nav-icon { font-size: 14px; width: 18px; text-align: center; }
+
+  .sidebar-footer {
+    margin-top: auto;
+    padding: 20px 24px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    font-size: 11px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.06em;
+    line-height: 1.8;
+  }
+
+  /* ── MAIN ── */
+  .main { margin-left: 224px; flex: 1; display: flex; flex-direction: column; }
+
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 32px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(247,243,236,0.95);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .topbar-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--green);
+    letter-spacing: -0.01em;
+  }
+
+  .topbar-right { display: flex; align-items: center; gap: 16px; }
+
+  .topbar-date {
+    font-size: 11px;
+    font-weight: 300;
+    color: var(--mid);
+    letter-spacing: 0.08em;
+  }
+
+  .badge-live {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    color: var(--green-light);
+    text-transform: uppercase;
+  }
+
+  .live-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--green-light);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  .content { padding: 28px 32px; }
+
+  /* ── STAT CARDS ── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .stat-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 22px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+  }
+
+  .stat-card.green::before { background: var(--green); }
+  .stat-card.gold::before { background: var(--gold); }
+  .stat-card.blue::before { background: var(--blue); }
+  .stat-card.red::before { background: var(--red); }
+
+  .stat-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 10px;
+  }
+
+  .stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 38px;
+    font-weight: 400;
+    line-height: 1;
+    color: var(--green);
+    margin-bottom: 8px;
+  }
+
+  .stat-delta {
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--green-light);
+  }
+  .stat-delta.down { color: var(--red); }
+
+  /* ── TWO COL ── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  /* ── PANEL ── */
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+  }
+
+  .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 22px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .panel-title {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--green);
+  }
+
+  .panel-action {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--mid);
+    cursor: pointer;
+    background: none;
+    border: none;
+    transition: color 0.2s;
+  }
+  .panel-action:hover { color: var(--green); }
+
+  /* ── TABLE ── */
+  .table-wrap { overflow-x: auto; }
+
+  table { width: 100%; border-collapse: collapse; }
+
+  thead th {
+    padding: 11px 18px;
+    text-align: left;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--mid);
+    border-bottom: 1px solid var(--border);
+    background: rgba(27,67,50,0.02);
+  }
+
+  tbody td {
+    padding: 13px 18px;
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--text);
+    border-bottom: 1px solid rgba(27,67,50,0.04);
+    letter-spacing: 0.02em;
+  }
+
+  tbody tr:hover td { background: rgba(27,67,50,0.025); }
+  tbody tr:last-child td { border-bottom: none; }
+
+  .member-name-cell { display: flex; align-items: center; gap: 10px; }
+
+  .avatar {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    font-weight: 500;
+    flex-shrink: 0;
+    font-family: 'Playfair Display', serif;
+    background: var(--green-pale);
+    color: var(--green);
+  }
+
+  .tier-pill {
+    display: inline-block;
+    padding: 3px 10px;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border: 1px solid;
+  }
+  .tier-pill.silver { border-color: #9aa0a6; color: #9aa0a6; }
+  .tier-pill.gold { border-color: var(--gold); color: var(--gold); }
+  .tier-pill.platinum { border-color: #b0c4d8; color: #b0c4d8; }
+
+  /* ── ACTIVITY ── */
+  .activity-feed { padding: 4px 0; max-height: 420px; overflow-y: auto; }
+
+  .activity-item {
+    display: flex;
+    gap: 12px;
+    padding: 13px 22px;
+    border-bottom: 1px solid rgba(27,67,50,0.04);
+    transition: background 0.15s;
+  }
+  .activity-item:hover { background: rgba(27,67,50,0.02); }
+  .activity-item:last-child { border-bottom: none; }
+
+  .act-icon {
+    width: 30px; height: 30px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+    border: 1px solid var(--border);
+    margin-top: 2px;
+    color: var(--green);
+    background: var(--green-pale);
+  }
+
+  .act-body { flex: 1; }
+
+  .act-text {
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--text);
+    line-height: 1.4;
+    margin-bottom: 3px;
+  }
+  .act-text strong { font-weight: 500; color: var(--green); }
+
+  .act-time {
+    font-size: 10px;
+    font-weight: 300;
+    color: var(--mid);
+    letter-spacing: 0.04em;
+  }
+
+  .act-pts {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 400;
+    align-self: center;
+    flex-shrink: 0;
+  }
+  .act-pts.earn { color: var(--green-light); }
+  .act-pts.redeem { color: var(--red); }
+
+  /* ── ADD POINTS ── */
+  .add-points-panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--green);
+    padding: 26px;
+    margin-bottom: 20px;
+  }
+
+  .add-pts-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--green);
+    margin-bottom: 4px;
+  }
+
+  .add-pts-sub {
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 22px;
+  }
+
+  .add-pts-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 160px 140px;
+    gap: 16px;
+    align-items: end;
+  }
+
+  .field-group label {
+    display: block;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 8px;
+  }
+
+  .field-group input, .field-group select {
+    width: 100%;
+    background: var(--cream);
+    border: 1px solid var(--border);
+    padding: 10px 14px;
+    color: var(--text);
+    font-family: 'Jost', sans-serif;
+    font-size: 13px;
+    font-weight: 300;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .field-group input:focus, .field-group select:focus { border-color: var(--green); }
+
+  .btn-add {
+    background: var(--green);
+    color: var(--white);
+    border: none;
+    padding: 11px 18px;
+    font-family: 'Jost', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .btn-add:hover { background: var(--green-mid); }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--mid);
+    border: 1px solid var(--border);
+    padding: 11px 16px;
+    font-family: 'Jost', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .btn-outline:hover { border-color: var(--green); color: var(--green); }
+
+  /* ── TIER BREAKDOWN ── */
+  .tier-breakdown { display: flex; flex-direction: column; padding: 12px 22px; }
+
+  .tier-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 11px 0;
+    border-bottom: 1px solid rgba(27,67,50,0.05);
+  }
+  .tier-row:last-child { border-bottom: none; }
+
+  .tier-name-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    width: 80px;
+  }
+
+  .tier-bar-wrap {
+    flex: 1;
+    height: 3px;
+    background: rgba(27,67,50,0.08);
+    margin: 0 14px;
+    overflow: hidden;
+  }
+  .tier-bar { height: 100%; }
+
+  .tier-count {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--green);
+    min-width: 36px;
+    text-align: right;
+  }
+
+  /* ── LOCATION BREAKDOWN ── */
+  .location-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 11px 22px;
+    border-bottom: 1px solid rgba(27,67,50,0.05);
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--text);
+  }
+  .location-row:last-child { border-bottom: none; }
+  .location-row span { color: var(--gold); font-weight: 500; }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    background: var(--green);
+    color: var(--white);
+    padding: 14px 22px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: all 0.3s ease;
+    pointer-events: none;
+    z-index: 999;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+
+  .screen-panel { display: none; }
+  .screen-panel.active { display: block; }
+
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(27,67,50,0.15); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <div class="name">TEN<sup>11</sup></div>
+    <div class="sub">Admin · Loyalty</div>
+  </div>
+
+  <div class="sidebar-label">Overview</div>
+  <button class="nav-link active" onclick="switchPanel('overview', this)">
+    <span class="nav-icon">◈</span> Dashboard
+  </button>
+  <button class="nav-link" onclick="switchPanel('members', this)">
+    <span class="nav-icon">◎</span> Members
+  </button>
+  <button class="nav-link" onclick="switchPanel('activity', this)">
+    <span class="nav-icon">◇</span> Activity Feed
+  </button>
+
+  <div class="sidebar-label">Tools</div>
+  <button class="nav-link" onclick="switchPanel('points', this)">
+    <span class="nav-icon">✦</span> Add Points
+  </button>
+  <button class="nav-link" onclick="switchPanel('rewards', this)">
+    <span class="nav-icon">◆</span> Rewards
+  </button>
+  <button class="nav-link" onclick="switchPanel('locations', this)">
+    <span class="nav-icon">📍</span> Locations
+  </button>
+
+  <div class="sidebar-footer">
+    6 UAE Locations<br>
+    TEN11 + 7seven7<br>
+    Staff Access · v1.0
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title" id="topbar-title">Dashboard Overview</div>
+    <div class="topbar-right">
+      <div class="topbar-date">Sunday, 1 June 2026</div>
+      <div class="badge-live"><div class="live-dot"></div> Live</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ════ OVERVIEW ════ -->
+    <div id="panel-overview" class="screen-panel active">
+
+      <div class="stats-grid">
+        <div class="stat-card green">
+          <div class="stat-label">Total Members</div>
+          <div class="stat-value">384</div>
+          <div class="stat-delta">↑ +28 this month</div>
+        </div>
+        <div class="stat-card gold">
+          <div class="stat-label">Points Issued</div>
+          <div class="stat-value">62,480</div>
+          <div class="stat-delta">↑ +3,840 this week</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">Points Redeemed</div>
+          <div class="stat-value">24,100</div>
+          <div class="stat-delta">↑ +1,200 this week</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-label">Active Today</div>
+          <div class="stat-value">31</div>
+          <div class="stat-delta">↑ +7 vs yesterday</div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <!-- Members table -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">Recent Members</div>
+            <button class="panel-action" onclick="switchPanel('members', document.querySelectorAll('.nav-link')[2])">View All →</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Member</th><th>Tier</th><th>Points</th><th>Location</th><th>Joined</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><div class="member-name-cell"><div class="avatar">F</div>Fatima Al Zaabi</div></td><td><span class="tier-pill gold">Gold</span></td><td style="color:var(--gold)">1,480</td><td>Dubai Mall</td><td>Feb 2026</td></tr>
+                <tr><td><div class="member-name-cell"><div class="avatar">K</div>Khalid Al Mansoori</div></td><td><span class="tier-pill platinum">Platinum</span></td><td style="color:var(--gold)">4,220</td><td>Khalifa Park</td><td>Oct 2025</td></tr>
+                <tr><td><div class="member-name-cell"><div class="avatar">M</div>Mariam Hassan</div></td><td><span class="tier-pill silver">Silver</span></td><td style="color:var(--gold)">280</td><td>Dubai Mall</td><td>May 2026</td></tr>
+                <tr><td><div class="member-name-cell"><div class="avatar">S</div>Sara Al Bloushi</div></td><td><span class="tier-pill gold">Gold</span></td><td style="color:var(--gold)">1,760</td><td>TEN11 Beach</td><td>Mar 2026</td></tr>
+                <tr><td><div class="member-name-cell"><div class="avatar">A</div>Ahmed Al Kaabi</div></td><td><span class="tier-pill silver">Silver</span></td><td style="color:var(--gold)">640</td><td>Marina Mall</td><td>Apr 2026</td></tr>
+                <tr><td><div class="member-name-cell"><div class="avatar">N</div>Noura Al Shamsi</div></td><td><span class="tier-pill platinum">Platinum</span></td><td style="color:var(--gold)">3,540</td><td>Khalifa Park</td><td>Sep 2025</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Right col -->
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <!-- Tier breakdown -->
+          <div class="panel">
+            <div class="panel-header"><div class="panel-title">Tier Breakdown</div></div>
+            <div class="tier-breakdown">
+              <div class="tier-row">
+                <div class="tier-name-cell"><span style="color:#b0c4d8">◆</span> Platinum</div>
+                <div class="tier-bar-wrap"><div class="tier-bar" style="width:18%;background:#b0c4d8"></div></div>
+                <div class="tier-count" style="color:#b0c4d8">68</div>
+              </div>
+              <div class="tier-row">
+                <div class="tier-name-cell"><span style="color:var(--gold)">◆</span> Gold</div>
+                <div class="tier-bar-wrap"><div class="tier-bar" style="width:40%;background:var(--gold)"></div></div>
+                <div class="tier-count" style="color:var(--gold)">154</div>
+              </div>
+              <div class="tier-row">
+                <div class="tier-name-cell"><span style="color:#9aa0a6">◆</span> Silver</div>
+                <div class="tier-bar-wrap"><div class="tier-bar" style="width:42%;background:#9aa0a6"></div></div>
+                <div class="tier-count" style="color:#9aa0a6">162</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Top redeemed -->
+          <div class="panel">
+            <div class="panel-header"><div class="panel-title">Top Redeemed</div></div>
+            <div style="padding:4px 0">
+              <div class="activity-item" style="padding:11px 22px"><div class="act-icon">☕</div><div class="act-body"><div class="act-text">Specialty Coffee</div><div class="act-time">100 pts · 98 redemptions</div></div></div>
+              <div class="activity-item" style="padding:11px 22px"><div class="act-icon">🍰</div><div class="act-body"><div class="act-text">Homemade Dessert</div><div class="act-time">250 pts · 54 redemptions</div></div></div>
+              <div class="activity-item" style="padding:11px 22px;border-bottom:none"><div class="act-icon">🍳</div><div class="act-body"><div class="act-text">Savory Breakfast</div><div class="act-time">400 pts · 31 redemptions</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Activity feed -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Live Activity Feed</div>
+          <div class="badge-live"><div class="live-dot"></div> Real-time</div>
+        </div>
+        <div class="activity-feed">
+          <div class="activity-item"><div class="act-icon" style="color:var(--green-light);background:var(--green-pale)">+</div><div class="act-body"><div class="act-text"><strong>Noura Al Shamsi</strong> checked in — AED 340 · Dubai Mall</div><div class="act-time">4 min ago</div></div><div class="act-pts earn">+34</div></div>
+          <div class="activity-item"><div class="act-icon" style="color:var(--red);background:#fdf0ef">−</div><div class="act-body"><div class="act-text"><strong>Khalid Al Mansoori</strong> redeemed Wagyu Burger</div><div class="act-time">18 min ago</div></div><div class="act-pts redeem">−700</div></div>
+          <div class="activity-item"><div class="act-icon" style="color:var(--green-light);background:var(--green-pale)">+</div><div class="act-body"><div class="act-text"><strong>Mariam Hassan</strong> joined via referral — FATIMA200</div><div class="act-time">42 min ago</div></div><div class="act-pts earn">+100</div></div>
+          <div class="activity-item"><div class="act-icon" style="color:var(--green-light);background:var(--green-pale)">+</div><div class="act-body"><div class="act-text"><strong>Sara Al Bloushi</strong> checked in — AED 280 · TEN11 Beach</div><div class="act-time">1 hr ago</div></div><div class="act-pts earn">+28</div></div>
+          <div class="activity-item"><div class="act-icon" style="color:var(--gold);background:#fdf8ef">★</div><div class="act-body"><div class="act-text"><strong>Fatima Al Zaabi</strong> upgraded to Gold tier</div><div class="act-time">2 hr ago</div></div><div class="act-pts" style="color:var(--gold)">↑ Gold</div></div>
+          <div class="activity-item"><div class="act-icon" style="color:var(--red);background:#fdf0ef">−</div><div class="act-body"><div class="act-text"><strong>Ahmed Al Kaabi</strong> redeemed Specialty Coffee · Marina Mall</div><div class="act-time">3 hr ago</div></div><div class="act-pts redeem">−100</div></div>
+          <div class="activity-item"><div class="act-icon" style="color:var(--green-light);background:var(--green-pale)">+</div><div class="act-body"><div class="act-text"><strong>Khalid Al Mansoori</strong> checked in — AED 510 · Khalifa Park</div><div class="act-time">4 hr ago</div></div><div class="act-pts earn">+51</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════ MEMBERS ════ -->
+    <div id="panel-members" class="screen-panel">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">All Members (384)</div>
+          <div style="display:flex;gap:12px;align-items:center">
+            <input placeholder="Search member..." style="background:var(--cream);border:1px solid var(--border);padding:7px 14px;color:var(--text);font-family:Jost,sans-serif;font-size:12px;outline:none;width:200px">
+            <button class="btn-outline">Export CSV</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Member</th><th>Phone</th><th>Tier</th><th>Points</th><th>Home Location</th><th>Visits</th><th>Joined</th><th>Action</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><div class="member-name-cell"><div class="avatar">N</div>Noura Al Shamsi</div></td><td style="color:var(--mid)">+971 50 111 0022</td><td><span class="tier-pill platinum">Platinum</span></td><td style="color:var(--gold)">3,540</td><td>Khalifa Park</td><td>32</td><td>Sep 2025</td><td><button class="btn-outline" style="padding:4px 12px;font-size:9px" onclick="showToast('Opening member profile')">View</button></td></tr>
+              <tr><td><div class="member-name-cell"><div class="avatar">K</div>Khalid Al Mansoori</div></td><td style="color:var(--mid)">+971 55 334 5566</td><td><span class="tier-pill platinum">Platinum</span></td><td style="color:var(--gold)">4,220</td><td>Khalifa Park</td><td>41</td><td>Oct 2025</td><td><button class="btn-outline" style="padding:4px 12px;font-size:9px" onclick="showToast('Opening member profile')">View</button></td></tr>
+              <tr><td><div class="member-name-cell"><div class="avatar">S</div>Sara Al Bloushi</div></td><td style="color:var(--mid)">+971 52 789 0011</td><td><span class="tier-pill gold">Gold</span></td><td style="color:var(--gold)">1,760</td><td>TEN11 Beach</td><td>18</td><td>Mar 2026</td><td><button class="btn-outline" style="padding:4px 12px;font-size:9px" onclick="showToast('Opening member profile')">View</button></td></tr>
+              <tr><td><div class="member-name-cell"><div class="avatar">F</div>Fatima Al Zaabi</div></td><td style="color:var(--mid)">+971 56 223 4455</td><td><span class="tier-pill gold">Gold</span></td><td style="color:var(--gold)">1,480</td><td>Dubai Mall</td><td>15</td><td>Feb 2026</td><td><button class="btn-outline" style="padding:4px 12px;font-size:9px" onclick="showToast('Opening member profile')">View</button></td></tr>
+              <tr><td><div class="member-name-cell"><div class="avatar">A</div>Ahmed Al Kaabi</div></td><td style="color:var(--mid)">+971 54 667 8899</td><td><span class="tier-pill silver">Silver</span></td><td style="color:var(--gold)">640</td><td>Marina Mall</td><td>7</td><td>Apr 2026</td><td><button class="btn-outline" style="padding:4px 12px;font-size:9px" onclick="showToast('Opening member profile')">View</button></td></tr>
+              <tr><td><div class="member-name-cell"><div class="avatar">M</div>Mariam Hassan</div></td><td style="color:var(--mid)">+971 50 445 6677</td><td><span class="tier-pill silver">Silver</span></td><td style="color:var(--gold)">280</td><td>Dubai Mall</td><td>3</td><td>May 2026</td><td><button class="btn-outline" style="padding:4px 12px;font-size:9px" onclick="showToast('Opening member profile')">View</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════ ACTIVITY ════ -->
+    <div id="panel-activity" class="screen-panel">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Full Activity Feed</div>
+          <div class="badge-live"><div class="live-dot"></div> Real-time</div>
+        </div>
+        <div class="activity-feed" style="max-height:600px">
+          <div class="activity-item"><div class="act-icon" style="color:var(--green-light);background:var(--green-pale)">+</div><div class="act-body"><div class="act-text"><strong>Noura Al Shamsi</strong> checked in — AED 340 · Dubai Mall</div><div class="act-time">Today, 11:12 AM</div></div><div class="act-pts earn">+34</div></div>
+          <div class="activity-item"><div class="act-icon" style="color:var(--red);background:#fdf0ef">−</div><div class="act-body"><div class="act-text"><strong>Khalid Al Mansoori</strong> redeemed Wagyu Burger · Khalifa Park</div><div class="act-time">Today, 10:58 AM</div></div><div class="act-pts redeem">−700</div></div>
+          <div class="activity-item"><div class="act-icon" style="color:var(--green-light);background:var(--green-pale)">+</div><div class="act-body"><div class="act-text"><strong>Mariam Hassan</strong> joined via referral FATIMA200</div><div class="act-time">Today, 10:34 AM</div></div><div class="act-pts earn">+100</div></div>
+          <div class="activity-item"><div class="act-icon" style="color:var(--green-light);background:var(--green-pale)">+</div><div class="act-body"><div class="act-text"><strong>Sara Al Bloushi</strong> checked in — AED 280 · TEN11 Beach</div><div class="act-time">Today, 10:16 AM</div></div><div class="act-pts earn">+28</div></div>
+          <div class="activity-item"><div class="act-icon" style="color:var(--gold);background:#fdf8ef">★</div><div class="act-body"><div class="act-text"><strong>Fatima Al Zaabi</strong> upgraded to Gold tier</div><div class="act-time">Today, 9:44 AM</div></div><div class="act-pts" style="color:var(--gold)">↑ Gold</div></div>
+          <div class="activity-item"><div class="act-icon" style="color:var(--red);background:#fdf0ef">−</div><div class="act-body"><div class="act-text"><strong>Ahmed Al Kaabi</strong> redeemed Specialty Coffee · Marina Mall</div><div class="act-time">Today, 9:20 AM</div></div><div class="act-pts redeem">−100</div></div>
+          <div class="activity-item"><div class="act-icon" style="color:var(--green-light);background:var(--green-pale)">+</div><div class="act-body"><div class="act-text"><strong>Khalid Al Mansoori</strong> checked in — AED 510 · Khalifa Park</div><div class="act-time">Today, 8:55 AM</div></div><div class="act-pts earn">+51</div></div>
+          <div class="activity-item"><div class="act-icon" style="color:var(--green-light);background:var(--green-pale)">+</div><div class="act-body"><div class="act-text"><strong>Noura Al Shamsi</strong> checked in — AED 420 · TEN11 Beach</div><div class="act-time">Yesterday, 7:38 PM</div></div><div class="act-pts earn">+42</div></div>
+          <div class="activity-item"><div class="act-icon" style="color:var(--red);background:#fdf0ef">−</div><div class="act-body"><div class="act-text"><strong>Sara Al Bloushi</strong> redeemed Homemade Dessert · TEN11 Beach</div><div class="act-time">Yesterday, 4:12 PM</div></div><div class="act-pts redeem">−250</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════ ADD POINTS ════ -->
+    <div id="panel-points" class="screen-panel">
+      <div class="add-points-panel">
+        <div class="add-pts-title">Manual Points Entry</div>
+        <div class="add-pts-sub">For barista / staff use — log a spend</div>
+        <div class="add-pts-row">
+          <div class="field-group">
+            <label>Member Name / ID</label>
+            <input type="text" id="ap-member" placeholder="Search member..." list="member-list">
+            <datalist id="member-list">
+              <option value="Fatima Al Zaabi (Gold)">
+              <option value="Khalid Al Mansoori (Platinum)">
+              <option value="Noura Al Shamsi (Platinum)">
+              <option value="Sara Al Bloushi (Gold)">
+              <option value="Ahmed Al Kaabi (Silver)">
+              <option value="Mariam Hassan (Silver)">
+            </datalist>
+          </div>
+          <div class="field-group">
+            <label>Spend Amount (AED)</label>
+            <input type="number" id="ap-amount" placeholder="e.g. 185" oninput="calcPoints()">
+          </div>
+          <div class="field-group">
+            <label>Points to Award</label>
+            <input type="number" id="ap-points" placeholder="Auto-calc" style="color:var(--green);font-weight:500">
+          </div>
+          <button class="btn-add" onclick="doAddPoints()">+ ADD POINTS</button>
+        </div>
+        <div style="margin-top:14px;font-size:11px;color:var(--mid);letter-spacing:.04em">
+          Rate: <span style="color:var(--green);font-weight:500">1 pt per AED 10</span> &nbsp;·&nbsp; All entries logged with staff ID &nbsp;·&nbsp; Valid at all UAE locations
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">Recent Manual Entries</div></div>
+        <div class="activity-feed">
+          <div class="activity-item"><div class="act-icon" style="color:var(--green-light);background:var(--green-pale)">+</div><div class="act-body"><div class="act-text"><strong>Noura Al Shamsi</strong> — AED 340 by Staff: Aisha · Dubai Mall</div><div class="act-time">Today, 11:12 AM</div></div><div class="act-pts earn">+34</div></div>
+          <div class="activity-item"><div class="act-icon" style="color:var(--green-light);background:var(--green-pale)">+</div><div class="act-body"><div class="act-text"><strong>Sara Al Bloushi</strong> — AED 280 by Staff: Omar · TEN11 Beach</div><div class="act-time">Today, 10:16 AM</div></div><div class="act-pts earn">+28</div></div>
+          <div class="activity-item"><div class="act-icon" style="color:var(--green-light);background:var(--green-pale)">+</div><div class="act-body"><div class="act-text"><strong>Khalid Al Mansoori</strong> — AED 510 by Staff: Aisha · Khalifa Park</div><div class="act-time">Today, 8:55 AM</div></div><div class="act-pts earn">+51</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════ REWARDS ════ -->
+    <div id="panel-rewards" class="screen-panel">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">Reward Catalogue</div>
+          <button class="panel-action" onclick="showToast('Add reward — available in full build')">+ Add Reward</button>
+        </div>
+        <table>
+          <thead><tr><th>Reward</th><th>Points Cost</th><th>Tier Required</th><th>Times Redeemed</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>☕ Specialty Coffee</td><td style="color:var(--gold)">100</td><td><span class="tier-pill silver">Silver+</span></td><td>98</td><td style="color:var(--green-light)">Active</td></tr>
+            <tr><td>🍰 Homemade Dessert</td><td style="color:var(--gold)">250</td><td><span class="tier-pill silver">Silver+</span></td><td>54</td><td style="color:var(--green-light)">Active</td></tr>
+            <tr><td>🍳 Savory Breakfast</td><td style="color:var(--gold)">400</td><td><span class="tier-pill silver">Silver+</span></td><td>31</td><td style="color:var(--green-light)">Active</td></tr>
+            <tr><td>🫓 Signature Flatbread</td><td style="color:var(--gold)">500</td><td><span class="tier-pill silver">Silver+</span></td><td>22</td><td style="color:var(--green-light)">Active</td></tr>
+            <tr><td>🍔 Wagyu Beef Burger</td><td style="color:var(--gold)">700</td><td><span class="tier-pill gold">Gold+</span></td><td>17</td><td style="color:var(--green-light)">Active</td></tr>
+            <tr><td>🦐 Shrimp Saffron Risotto</td><td style="color:var(--gold)">1,200</td><td><span class="tier-pill platinum">Platinum</span></td><td>8</td><td style="color:var(--green-light)">Active</td></tr>
+            <tr><td>🥩 Wagyu Ribeye Robata</td><td style="color:var(--gold)">1,400</td><td><span class="tier-pill platinum">Platinum</span></td><td>5</td><td style="color:var(--green-light)">Active</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ════ LOCATIONS ════ -->
+    <div id="panel-locations" class="screen-panel">
+      <div class="stats-grid" style="grid-template-columns:repeat(3,1fr)">
+        <div class="stat-card green">
+          <div class="stat-label">Dubai Mall Members</div>
+          <div class="stat-value">142</div>
+          <div class="stat-delta">Most active location</div>
+        </div>
+        <div class="stat-card gold">
+          <div class="stat-label">Khalifa Park Members</div>
+          <div class="stat-value">118</div>
+          <div class="stat-delta">Highest avg. spend</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">TEN11 Beach Members</div>
+          <div class="stat-value">64</div>
+          <div class="stat-delta">Newest location</div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">Location Breakdown</div></div>
+        <div class="location-row">TEN11 Dubai Mall<span>142 members · 1,840 pts issued today</span></div>
+        <div class="location-row">TEN11 Khalifa Park<span>118 members · 2,120 pts issued today</span></div>
+        <div class="location-row">TEN11 Beach (Mamsha)<span>64 members · 980 pts issued today</span></div>
+        <div class="location-row">TEN11 Marina Mall<span>38 members · 440 pts issued today</span></div>
+        <div class="location-row">TEN11 Al Ain<span>14 members · 160 pts issued today</span></div>
+        <div class="location-row">TEN11 Expo City<span>8 members · 80 pts issued today</span></div>
+      </div>
+      <div style="height:16px"></div>
+      <div class="panel">
+        <div class="panel-header"><div class="panel-title">7seven7 Cross-Brand Earnings</div></div>
+        <div class="location-row">7seven7 Khalifa Park<span>22 cross-brand visits · 310 pts issued</span></div>
+        <div class="location-row">7seven7 Expo City<span>11 cross-brand visits · 140 pts issued</span></div>
+        <div class="location-row">7seven7 Burjeel Hospital<span>8 cross-brand visits · 90 pts issued</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  function switchPanel(id, el) {
+    document.querySelectorAll('.screen-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+    document.getElementById('panel-' + id).classList.add('active');
+    if (el) el.classList.add('active');
+    const titles = {
+      overview: 'Dashboard Overview',
+      members: 'Member Management',
+      activity: 'Activity Feed',
+      points: 'Add Points',
+      rewards: 'Reward Catalogue',
+      locations: 'Location Analytics'
+    };
+    document.getElementById('topbar-title').textContent = titles[id];
+  }
+  function calcPoints() {
+    const amt = parseFloat(document.getElementById('ap-amount').value) || 0;
+    document.getElementById('ap-points').value = Math.floor(amt / 10) || '';
+  }
+  function doAddPoints() {
+    const member = document.getElementById('ap-member').value;
+    const pts = document.getElementById('ap-points').value;
+    if (!member || !pts) { showToast('Please fill in member and amount'); return; }
+    showToast(`+${pts} pts added to ${member.split(' (')[0]}`);
+    document.getElementById('ap-member').value = '';
+    document.getElementById('ap-amount').value = '';
+    document.getElementById('ap-points').value = '';
+  }
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+</script>
+</body>
+</html>
